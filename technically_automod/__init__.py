@@ -68,30 +68,36 @@ if _discordpy:
         lib = _discordpy
         libname = "discordpy"
         TechnicallyAutomodCog = DiscordpyAutomodCog
+        setup = cog_discordpy.setup
     else:
         lib = None
         libname = None
         TechnicallyAutomodCog = _BadCog
+        setup = bad_setup
 
 if _disnake:
     if not (_discordpy or _nextcord):
         lib = _disnake
         libname = "disnake"
         TechnicallyAutomodCog = DisnakeAutomodCog
+        setup = cog_disnake.setup
     else:
         lib = None
         libname = None
         TechnicallyAutomodCog = _BadCog
+        setup = bad_setup
 
 if _nextcord:
     if not (_discordpy or _disnake):
         lib = _nextcord
         libname = "nextcord"
         TechnicallyAutomodCog = NextcordAutomodCog
+        setup = cog_nextcord.setup
     else:
         lib = None
         libname = None
         TechnicallyAutomodCog = _BadCog
+        setup = bad_setup
 
-else:
+if lib is None:
     raise ImportError("No Discord API library found.")
