@@ -1,6 +1,6 @@
 [project]
 name = "technically-automod"
-version = "0.1.0"
+version = "0.1.1"
 description = "Message intent justification for Python-based Discord bots"
 authors = [
     {name = "nwunderly",email = "nwunder.dev@gmail.com"}

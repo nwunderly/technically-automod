@@ -1,5 +1,5 @@
 # Technically Automod
-Message intent justification for Python-based discord bots
+Message intent justification for Python-based discord bots.
 
 technically-automod is an automod cog for major Python-based Discord API frameworks (Discord.py, Disnake, Nextcord).
 
@@ -24,16 +24,17 @@ $ cd technically-automod
 $ python3 -m pip install -U .
 ```
 
-## Quickstart
+To ensure version compatibility with your Discord API library:
 
-Load the extension:
-
-```py
+```sh
 # discord.py
-await bot.load_extension("technically_automod")
+pip install technically-automod[discord.py]
 
-# disnake & nextcord
-bot.load_extension("technically_automod")
+# disnake
+pip install technically-automod[disnake]
+
+# nextcord
+pip install technically-automod[nextcord]
 ```
 
 
@@ -84,6 +85,7 @@ bot.add_cog(DisnakeAutomodCog(bot))
 from technically_automod import NextcordAutomodCog
 bot.add_cog(NextcordAutomodCog(bot))
 ```
+
 
 ## Configuration
 
