@@ -1,4 +1,5 @@
 import json
+import os
 import re
 import time
 from urllib.parse import unquote, urlparse
@@ -18,8 +19,15 @@ SHORTENERS_URL = "https://raw.githubusercontent.com/nwunderly/ouranos/refs/heads
 
 
 def load_config():
+    if not os.path.exists("config.json"):
+        return []
+
     with open("config.json", "r") as f:
-        return json.load(f)
+        text = f.read()
+        if not text:
+            return []
+
+        return json.loads(text)
 
 
 class Automod:

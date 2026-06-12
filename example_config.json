@@ -1,23 +1,23 @@
 [
   {
-    "name": "phishing",
+    "name": "Phishing Detection",
     "type": "phishing",
     "actions": ["delete", "kick"]
   },
   {
-    "name": "bad words",
+    "name": "Bad Word Detection",
     "type": "words",
     "match": ["heck", "frick"],
     "actions": ["delete"]
   },
   {
-    "name": "brainrot",
+    "name": "Brainrot Detecton",
     "type": "substring",
     "match": ["67"],
     "actions": []
   },
   {
-    "name": "spam",
+    "name": "Spam Detection",
     "type": "regex",
     "match": ["(?:\w+){30,}"],
     "actions": ["delete"]
