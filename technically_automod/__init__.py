@@ -1,5 +1,5 @@
 """
-technically-automod
+Technically Automod
 """
 
 ###################
@@ -7,35 +7,25 @@ technically-automod
 ###################
 
 try:
-    import discord as _discordpy
+    from . import discordpy
+    from .discordpy import DiscordpyAutomodCog
 except ModuleNotFoundError:
-    _discordpy = None
+    discordpy = None
+    DiscordpyAutomodCog = None
 
 try:
-    import disnake as _disnake
+    from . import disnake
+    from .disnake import DisnakeAutomodCog
 except ModuleNotFoundError:
-    _disnake = None
+    disnake = None
+    DisnakeAutomodCog = None
 
 try:
-    import nextcord as _nextcord
+    from . import nextcord
+    from .nextcord import NextcordAutomodCog
 except ModuleNotFoundError:
-    _nextcord = None
-
-##################################
-# CONDITIONALLY IMPORTED MODULES #
-##################################
-
-if _discordpy:
-    import cog_discordpy
-    from cog_discordpy import DiscordpyAutomodCog
-
-if _disnake:
-    import cog_disnake
-    from cog_disnake import DisnakeAutomodCog
-
-if _nextcord:
-    import cog_nextcord
-    from cog_nextcord import NextcordAutomodCog
+    nextcord = None
+    NextcordAutomodCog = None
 
 ############################################################
 # ERROR BEHAVIOR IF WE CAN'T AUTOMATICALLY CHOOSE A MODULE #
@@ -44,15 +34,15 @@ if _nextcord:
 _error_message = (
     "Found multiple Discord API libraries. Please explicitly import "
     "DiscordpyAutomodCog, DisnakeAutomodCog, or NextcordAutomodCog; "
-    "OR use technically_automod.cog_discordpy, technically_automod.cog_disnake, or technically_automod.cog_nextcord "
+    "OR use technically_automod.discordpy, technically_automod.disnake, or technically_automod.nextcord "
     "when calling load_extension."
 )
 
 class _BadCog:
-    def __init__(self, _):
+    def _init__(self, ):
         raise ImportError(_error_message)
 
-def bad_setup(_):
+def _bad_setup(_):
     raise ImportError(_error_message)
 
 ####################################################
@@ -62,42 +52,28 @@ def bad_setup(_):
 lib = None
 libname = None
 TechnicallyAutomodCog: "DiscordpyAutomodCog | DisnakeAutomodCog | NextcordAutomodCog | _BadCog" = _BadCog
+setup = _bad_setup
 
-if _discordpy:
-    if not (_disnake or _nextcord):
-        lib = _discordpy
+if discordpy:
+    if not (disnake or nextcord):
+        lib = discordpy
         libname = "discordpy"
         TechnicallyAutomodCog = DiscordpyAutomodCog
-        setup = cog_discordpy.setup
-    else:
-        lib = None
-        libname = None
-        TechnicallyAutomodCog = _BadCog
-        setup = bad_setup
+        setup = discordpy.setup
 
-if _disnake:
-    if not (_discordpy or _nextcord):
-        lib = _disnake
+elif disnake:
+    if not (discordpy or nextcord):
+        lib = disnake
         libname = "disnake"
         TechnicallyAutomodCog = DisnakeAutomodCog
-        setup = cog_disnake.setup
-    else:
-        lib = None
-        libname = None
-        TechnicallyAutomodCog = _BadCog
-        setup = bad_setup
+        setup = disnake.setup
 
-if _nextcord:
-    if not (_discordpy or _disnake):
-        lib = _nextcord
+elif nextcord:
+    if not (discordpy or disnake):
+        lib = nextcord
         libname = "nextcord"
         TechnicallyAutomodCog = NextcordAutomodCog
-        setup = cog_nextcord.setup
-    else:
-        lib = None
-        libname = None
-        TechnicallyAutomodCog = _BadCog
-        setup = bad_setup
+        setup = nextcord.setup
 
-if lib is None:
+else:
     raise ImportError("No Discord API library found.")
