@@ -1,7 +1,7 @@
 import json
 import re
 import time
-from urllib.parse import urlparse, unquote
+from urllib.parse import unquote, urlparse
 
 import aiohttp
 
@@ -9,14 +9,18 @@ URL_PATTERN = re.compile(
     r"https?:\/\/+(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"
 )
 
-REMOVE_EXTRA_SLASHES = re.compile(r"(https?://)/+")  # remove everything not inside group
+REMOVE_EXTRA_SLASHES = re.compile(
+    r"(https?://)/+"
+)  # remove everything not inside group
 
 FISHFISH_API = "https://api.fishfish.gg/v1/domains"
 SHORTENERS_URL = "https://raw.githubusercontent.com/nwunderly/ouranos/refs/heads/master/shorteners.txt"
 
+
 def load_config():
     with open("config.json", "r") as f:
         return json.load(f)
+
 
 class Automod:
     def __init__(self, cog):

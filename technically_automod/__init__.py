@@ -38,12 +38,17 @@ _error_message = (
     "when calling load_extension."
 )
 
+
 class _BadCog:
-    def _init__(self, ):
+    def _init__(
+        self,
+    ):
         raise ImportError(_error_message)
+
 
 def _bad_setup(_):
     raise ImportError(_error_message)
+
 
 ####################################################
 # AUTOMATICALLY SET COG BASED ON AVAILABLE MODULES #
@@ -51,7 +56,9 @@ def _bad_setup(_):
 
 lib = None
 libname = None
-TechnicallyAutomodCog: "DiscordpyAutomodCog | DisnakeAutomodCog | NextcordAutomodCog | _BadCog" = _BadCog
+TechnicallyAutomodCog: (
+    "DiscordpyAutomodCog | DisnakeAutomodCog | NextcordAutomodCog | _BadCog"
+) = _BadCog
 setup = _bad_setup
 
 if discordpy:
