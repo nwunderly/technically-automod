@@ -1,0 +1,25 @@
+[
+  {
+    "name": "phishing",
+    "type": "phishing",
+    "actions": ["delete", "kick"]
+  },
+  {
+    "name": "bad words",
+    "type": "words",
+    "match": ["heck", "frick"],
+    "actions": ["delete"]
+  },
+  {
+    "name": "brainrot",
+    "type": "substring",
+    "match": ["67"],
+    "actions": []
+  },
+  {
+    "name": "spam",
+    "type": "regex",
+    "match": ["(?:\w+){30,}"],
+    "actions": ["delete"]
+  }
+]
