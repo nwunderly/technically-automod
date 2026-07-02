@@ -1,25 +1,32 @@
-[
-  {
-    "name": "Phishing Detection",
-    "type": "phishing",
-    "actions": ["delete", "kick"]
-  },
-  {
-    "name": "Bad Word Detection",
-    "type": "words",
-    "match": ["heck", "frick"],
-    "actions": ["delete"]
-  },
-  {
-    "name": "Brainrot Detecton",
-    "type": "substring",
-    "match": ["67"],
-    "actions": []
-  },
-  {
-    "name": "Spam Detection",
-    "type": "regex",
-    "match": ["(?:\w+){30,}"],
-    "actions": ["delete"]
-  }
-]
+{
+  "guilds": [],
+  "rules": [
+    {
+      "name": "Phishing Detection",
+      "type": "phishing",
+      "check": ["message"],
+      "actions": ["delete", "kick"]
+    },
+    {
+      "name": "Bad Word Detection",
+      "type": "words",
+      "check": ["message", "profile"],
+      "match": ["heck", "frick"],
+      "actions": ["delete"]
+    },
+    {
+      "name": "Brainrot Detecton",
+      "type": "substring",
+      "check": ["message"],
+      "match": ["67"],
+      "actions": []
+    },
+    {
+      "name": "Spam Detection",
+      "type": "regex",
+      "check": ["message"],
+      "match": ["(?:\w+){30,}"],
+      "actions": ["delete"]
+    }
+  ]
+}

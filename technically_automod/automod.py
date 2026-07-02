@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import re
 import time
@@ -16,6 +17,8 @@ REMOVE_EXTRA_SLASHES = re.compile(
 
 FISHFISH_API = "https://api.fishfish.gg/v1/domains"
 SHORTENERS_URL = "https://raw.githubusercontent.com/nwunderly/ouranos/refs/heads/master/shorteners.txt"
+
+logger = logging.getLogger("technically_automod")
 
 
 def load_config():
@@ -35,39 +38,62 @@ class Automod:
         self.cog = cog
         self.bot = cog.bot
         self.config: list[dict] = load_config()
+        self.config_rules: list[dict] = self.config["rules"]
+        self.config_guilds: list[int] = self.config["guilds"]
         self.phishing_domains = []
         self.phishing_last_updated = 0
         self.shorteners = ()
 
-    async def check_message(self, message) -> bool:
-        for rule in self.config:
+    async def check(self, check: str, content: str, member, message=None):
+        # skip if guild not configured
+        if member.guild.id not in self.config_guilds:
+            return
+
+        for rule in self.config_rules:
             _match = False
+            rule_type = rule["type"]
+            rule_check = rule["check"]
+
+            # skip rules that aren't configured to check the thing we're currently checking
+            if check not in rule_check:
+                continue
+
             match rule["type"]:
                 case "phishing":
-                    _match = await self.check_phishing(message.content)
+                    _match = await self.check_phishing(content)
                 case "words":
-                    _match = self.check_word(message.content, rule)
+                    _match = self.check_word(content, rule)
                 case "substring":
-                    _match = self.check_substring(message.content, rule)
+                    _match = self.check_substring(content, rule)
                 case "regex":
-                    _match = self.check_regex(message.content, rule)
+                    _match = self.check_regex(content, rule)
                 case _:
-                    raise Exception("Invalid rule type.")
+                    logger.error(f"Invalid rule type '{rule_type}'")
+                    # raise Exception("Invalid rule type.")
 
             if _match:
                 kicked_or_banned = False
                 for action in rule["actions"]:
                     match action:
                         case "delete":
-                            await message.delete()
+                            if message:
+                                await message.delete()
                         case "kick":
                             if not kicked_or_banned:
                                 kicked_or_banned = True
-                                await message.author.kick()
+                                await member.kick()
                         case "ban":
                             if not kicked_or_banned:
                                 kicked_or_banned = True
-                                await message.author.ban()
+                                await member.ban()
+
+    async def check_message(self, message):
+        await self.check("message", message.content, message.author, message)
+
+    async def check_profile(self, member):
+        await self.check("profile", member.name, member)
+        await self.check("profile", member.global_name, member)
+        await self.check("profile", member.nick, member)
 
     async def pull_phishing_list(self):
         async with aiohttp.ClientSession() as session:

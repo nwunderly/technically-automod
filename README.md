@@ -1,5 +1,5 @@
 # Technically Automod
-Message intent justification for Python-based discord bots.
+Privileged intent justification for Python-based discord bots.
 
 technically-automod is an automod cog for major Python-based Discord API frameworks (Discord.py, Disnake, Nextcord).
 
@@ -92,7 +92,10 @@ bot.add_cog(NextcordAutomodCog(bot))
 When loaded, the automod cog will look for a file called "config.json" in the Python process's working directory.
 An example config file is provided in this repository.
 
-The config should be structured as a list of rules, where each rule consists of a name, a rule type, actions to perform on match,
+The config should be structured as a JSON object with two fields:
+
+- `guilds` should be a list of guild IDs to do automoderation in.
+- `rules` should be a list of rules, where each rule consists of a name, a rule type, actions to perform on match,
 and (if necessary) a list of items to match on.
 
 ### Disable Automod
@@ -101,17 +104,29 @@ Automod will do nothing if:
 
 1. There is no `config.json` file.
 2. `config.json` is empty.
-3. `config.json` contains an empty json list: `[]`
+3. The `guilds` field is missing, or contains an empty list: `[]`
+3. The `rules` field is missing, or contains an empty list: `[]`
 
 ### Rule Types
 
 The `type` field should be a string defining the rule type.
 
 1. Rule type `phishing` will use the [FishFish](https://fishfish.gg) database to detect phishing links.
-   The extension will update the phishing domain list every hour if the configuration contains a phishing rule.
+   The cog will update the phishing domain list every hour if the configuration contains a phishing rule.
 2. Rule type `words` will match whole words in the message content.
 3. Rule type `substring` will detect the matches anywhere in the message content, including in the middle of words.
 4. Rule type `regex` will use Python's `re.search` function to find regex pattern matches in the message content.
+
+### Check
+
+The `check` field should be a list of strings indicating what the rule should apply to.
+
+1. If `message` is in the list, the rule will be used to check the content of messages.
+   This requires the `message_content` intent.
+2. If `profile` is in the list, the rule will be used to check member username, global display name, and nickname.
+   This requires the `members` intent.
+
+Note: you can find more info on privileged intents [here](https://docs.discord.com/developers/events/gateway#privileged-intents).
 
 ### Match List
 
@@ -133,29 +148,36 @@ Note: if "kick" and "ban" are both listed, the one listed first will be performe
 Example `config.json` file:
 
 ```json
-[
-  {
-    "name": "Phishing Detection",
-    "type": "phishing",
-    "actions": ["delete", "kick"]
-  },
-  {
-    "name": "Bad Word Detection",
-    "type": "words",
-    "match": ["heck", "frick"],
-    "actions": ["delete"]
-  },
-  {
-    "name": "Brainrot Detecton",
-    "type": "substring",
-    "match": ["67"],
-    "actions": []
-  },
-  {
-    "name": "Spam Detection",
-    "type": "regex",
-    "match": ["(?:\w+){30,}"],
-    "actions": ["delete"]
-  }
-]
+{
+  "guilds": [],
+  "rules": [
+    {
+      "name": "Phishing Detection",
+      "type": "phishing",
+      "check": ["message"],
+      "actions": ["delete", "kick"]
+    },
+    {
+      "name": "Bad Word Detection",
+      "type": "words",
+      "check": ["message", "profile"],
+      "match": ["heck", "frick"],
+      "actions": ["delete"]
+    },
+    {
+      "name": "Brainrot Detecton",
+      "type": "substring",
+      "check": ["message"],
+      "match": ["67"],
+      "actions": []
+    },
+    {
+      "name": "Spam Detection",
+      "type": "regex",
+      "check": ["message"],
+      "match": ["(?:\w+){30,}"],
+      "actions": ["delete"]
+    }
+  ]
+}
 ```
