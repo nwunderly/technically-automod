@@ -12,7 +12,7 @@
       "type": "words",
       "check": ["message", "profile"],
       "match": ["heck", "frick"],
-      "actions": ["delete"]
+      "actions": ["delete", "kick"]
     },
     {
       "name": "Brainrot Detecton",

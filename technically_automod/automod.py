@@ -49,8 +49,13 @@ class Automod:
         if member.guild.id not in self.config_guilds:
             return
 
+        # skip if no content
+        if not content:
+            return
+
         for rule in self.config_rules:
             _match = False
+            rule_name = rule["name"]
             rule_type = rule["type"]
             rule_check = rule["check"]
 
@@ -81,11 +86,11 @@ class Automod:
                         case "kick":
                             if not kicked_or_banned:
                                 kicked_or_banned = True
-                                await member.kick()
+                                await member.kick(reason=f"{check} matched automod rule {rule_name}")
                         case "ban":
                             if not kicked_or_banned:
                                 kicked_or_banned = True
-                                await member.ban()
+                                await member.ban(reason=f"{check} matched automod rule {rule_name}")
 
     async def check_message(self, message):
         await self.check("message", message.content, message.author, message)
@@ -150,18 +155,18 @@ class Automod:
 
     def check_word(self, content: str, rule: dict) -> bool:
         for word in rule["match"]:
-            if re.search(rf"\b{word}\b", content):
+            if re.search(rf"\b{word}\b", content, re.I):
                 return True
         return False
 
     def check_substring(self, content: str, rule: dict) -> bool:
         for substring in rule["match"]:
-            if substring in content:
+            if substring.lower() in content.lower():
                 return True
         return False
 
     def check_regex(self, content: str, rule: dict) -> bool:
         for pattern in rule["match"]:
-            if re.search(pattern, content):
+            if re.search(pattern, content, re.I):
                 return True
         return False

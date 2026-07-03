@@ -1,0 +1,19 @@
+{
+  "guilds": [876954899387154472],
+  "rules": [
+    {
+      "name": "Combat Misinformation",
+      "type": "words",
+      "check": ["message", "profile"],
+      "match": ["rev is a bad programmer"],
+      "actions": ["delete", "kick"]
+    },
+    {
+      "name": "Combat Information",
+      "type": "substring",
+      "check": ["message"],
+      "match": ["rev is a good programmer"],
+      "actions": ["delete"]
+    }
+  ]
+}
