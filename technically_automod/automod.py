@@ -18,17 +18,21 @@ REMOVE_EXTRA_SLASHES = re.compile(
 FISHFISH_API = "https://api.fishfish.gg/v1/domains"
 SHORTENERS_URL = "https://raw.githubusercontent.com/nwunderly/ouranos/refs/heads/master/shorteners.txt"
 
-logger = logging.getLogger("technically_automod")
+DEFAULT_CONFIG = {
+    "guilds": [],
+    "rules": [],
+}
 
+logger = logging.getLogger("technically_automod")
 
 def load_config():
     if not os.path.exists("config.json"):
-        return []
+        return DEFAULT_CONFIG
 
     with open("config.json", "r") as f:
         text = f.read()
         if not text:
-            return []
+            return DEFAULT_CONFIG
 
         return json.loads(text)
 
