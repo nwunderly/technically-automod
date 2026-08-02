@@ -41,7 +41,7 @@ class Automod:
     def __init__(self, cog):
         self.cog = cog
         self.bot = cog.bot
-        self.config: list[dict] = load_config()
+        self.config: dict = load_config()
         self.config_rules: list[dict] = self.config["rules"]
         self.config_guilds: list[int] = self.config["guilds"]
         self.phishing_domains = []
